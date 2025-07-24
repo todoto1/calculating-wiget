@@ -11,9 +11,10 @@
     background: #FFFFFF;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* ✅ 위젯 시작 위치 상단 맞춤 */
     height: 100vh;
     margin: 0;
+    padding-top: 20px; /* 상단 여백 고정 */
   }
   #calculator-app {
     width: 260px;
@@ -56,7 +57,6 @@
     background: #000CFE;
     color: white;
   }
-  /* ✅ 숫자가 아닌 버튼(연한 회색 배경) */
   .operator {
     background: #E0E0E0;
     color: #000CFE;
@@ -107,29 +107,52 @@
 <script>
 const display = document.getElementById("display");
 
+// ✅ 실시간 쉼표 포맷
+function formatInput(expression) {
+  return expression.replace(/\d+(\.\d+)?/g, (num) => {
+    if (num.includes(".")) {
+      const parts = num.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return parts.join(".");
+    }
+    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  });
+}
+
+// ✅ 숫자, 연산자 입력 시 실시간 표시
 function appendValue(value) {
-  display.value += value;
+  // 쉼표 제거 후 연산 수행
+  let raw = display.dataset.raw || "";
+  raw += value;
+  display.dataset.raw = raw;
+  display.value = formatInput(raw);
 }
 
 function clearDisplay() {
-  display.value = display.value.slice(0, -1); // 한 글자 지우기
+  let raw = display.dataset.raw || "";
+  raw = raw.slice(0, -1);
+  display.dataset.raw = raw;
+  display.value = formatInput(raw);
 }
 
 function allClear() {
-  display.value = ""; // 전체 초기화
+  display.dataset.raw = "";
+  display.value = "";
 }
 
+// ✅ 계산 후 쉼표 적용
 function formatNumber(num) {
   if (isNaN(num)) return "Error";
   const parts = num.toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ","); // 천 단위 쉼표
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return parts.join(".");
 }
 
 function calculate() {
   try {
-    let expression = display.value.replace(/%/g, "/100"); // % 처리
-    const result = eval(expression);
+    const raw = (display.dataset.raw || "").replace(/%/g, "/100");
+    const result = eval(raw);
+    display.dataset.raw = result.toString();
     display.value = formatNumber(result);
   } catch {
     display.value = "Error";
