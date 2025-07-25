@@ -12,17 +12,20 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    height: 100vh;
+    height: auto; /* ✅ 100vh → auto */
     margin: 0;
-    padding-top: 20px;
+    padding: 0; /* ✅ 여백 제거 */
+    overflow: hidden; /* ✅ 스크롤 방지 */
   }
   #calculator-app {
-    width: 260px;
+    max-width: 260px;  /* ✅ 최대 260px, 자동 축소 */
+    width: 100%;       /* ✅ 부모 크기에 맞춰 자동 조정 */
     background: #F5F5F5;
-    padding: 20px;
+    padding: 15px;     /* ✅ 모바일 대응 */
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     text-align: center;
+    box-sizing: border-box;
   }
   .display {
     width: 100%;
@@ -30,9 +33,9 @@
     border: 2px solid #000CFE;
     border-radius: 10px;
     text-align: right;
-    font-size: 22px;
+    font-size: 20px; /* ✅ 작은 화면에서 가독성 유지 */
     padding: 5px 10px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: #000CFE;
     background: white;
     box-sizing: border-box;
@@ -40,11 +43,11 @@
   .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 6px;
   }
   button {
-    height: 50px;
-    font-size: 18px;
+    height: 45px; /* ✅ 버튼 크기 줄이기 */
+    font-size: 16px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -52,7 +55,7 @@
     color: #000CFE;
     border: 2px solid #000CFE;
     transition: 0.2s ease;
-    touch-action: manipulation; /* ✅ 모바일 터치 대응 */
+    touch-action: manipulation;
   }
   button:hover {
     background: #000CFE;
@@ -64,7 +67,6 @@
   }
   .operator:hover {
     background: #d5d5d5;
-    color: #000CFE;
   }
   .equal {
     background: #000CFE;
